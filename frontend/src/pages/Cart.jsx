@@ -266,9 +266,13 @@ const Cart = () => {
                   </div>
                 )}
 
-                <button className="btn btn-primary w-full btn-lg">
+                <Link 
+                  to="/checkout" 
+                  className="btn btn-primary w-full btn-lg"
+                  style={{ textDecoration: 'none', display: 'block', textAlign: 'center' }}
+                >
                   Proceed to Checkout
-                </button>
+                </Link>
 
                 <Link 
                   to="/products" 

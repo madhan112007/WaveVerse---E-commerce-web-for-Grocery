@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { ValidationRegex, validateField } from '../utils/validation';
+import API_BASE_URL from '../config/api';
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -65,27 +66,108 @@ const Login = () => {
 
     setLoading(true);
     try {
-      await login(formData.email, formData.password);
-      navigate(from, { replace: true });
+      const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password
+        })
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok) {
+        // Store token in localStorage
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('user', JSON.stringify(data.user));
+        
+        // Also store in sessionStorage for AuthContext
+        const userData = {
+          id: data.user.id,
+          email: data.user.email,
+          name: `${data.user.firstName} ${data.user.lastName}`,
+          role: data.user.role || 'user',
+          avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(data.user.firstName + ' ' + data.user.lastName)}&background=6fbf73&color=fff`
+        };
+        
+        sessionStorage.setItem('waveverse_user', JSON.stringify(userData));
+        
+        // Force page reload to update AuthContext
+        alert(`Login successful! Welcome ${data.user.role === 'admin' ? 'Admin' : 'User'}!`);
+        
+        // Redirect and reload
+        if (data.user.role === 'admin') {
+          window.location.href = '/admin';
+        } else {
+          window.location.href = from;
+        }
+      } else {
+        setErrors({ submit: data.message || 'Login failed' });
+      }
     } catch (error) {
-      setErrors({ submit: error.message });
+      setErrors({ submit: 'Network error. Please try again.' });
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div style={{ 
-      minHeight: '100vh', 
-      display: 'flex', 
-      alignItems: 'center',
-      background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
-      padding: '2rem 1rem'
-    }}>
-      <div className="container">
-        <div style={{
+    <>
+      <style>{`
+        @media (max-width: 768px) {
+          .login-container { flex-direction: column !important; }
+          .login-left { min-height: 40vh !important; }
+          .login-right { padding: 1rem !important; }
+          .login-form { max-width: 100% !important; }
+          .login-title { font-size: 2rem !important; }
+          .login-text { font-size: 1rem !important; }
+        }
+        @media (max-width: 480px) {
+          .login-left { min-height: 30vh !important; padding: 1rem !important; }
+          .login-form-content { padding: 1rem !important; }
+        }
+      `}</style>
+      <div className="login-container" style={{ 
+        minHeight: '100vh', 
+        display: 'flex',
+        background: '#f8f9fa'
+      }}>
+      {/* Left Side - Image */}
+      <div className="login-left" style={{
+        flex: 1,
+        backgroundImage: 'linear-gradient(135deg, rgba(76, 175, 80, 0.8) 0%, rgba(56, 142, 60, 0.8) 100%), url("https://images.unsplash.com/photo-1542838132-92c53300491e?w=800&h=1000&fit=crop")',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: 'white',
+        padding: '2rem',
+        minHeight: '100vh'
+      }}>
+        <div style={{ textAlign: 'center', maxWidth: '400px' }}>
+          <h1 className="login-title" style={{ fontSize: '3rem', marginBottom: '1rem', fontWeight: '700' }}>WaveVerse</h1>
+          <p className="login-text" style={{ fontSize: '1.2rem', opacity: 0.9, lineHeight: '1.6' }}>
+            Fresh groceries delivered to your doorstep in 30 minutes. Join thousands of satisfied customers!
+          </p>
+        </div>
+      </div>
+
+      {/* Right Side - Form */}
+      <div className="login-right" style={{
+        flex: 1,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '2rem'
+      }}>
+        <div className="login-form" style={{
+          width: '100%',
           maxWidth: '400px',
-          margin: '0 auto',
           background: 'white',
           borderRadius: 'var(--border-radius-xl)',
           boxShadow: 'var(--shadow-xl)',
@@ -105,19 +187,8 @@ const Login = () => {
           </div>
 
           {/* Form */}
-          <div style={{ padding: '2rem' }}>
-            {/* Demo Credentials */}
-            <div style={{
-              background: 'var(--gray-50)',
-              padding: '1rem',
-              borderRadius: 'var(--border-radius)',
-              marginBottom: '1.5rem',
-              fontSize: '0.875rem'
-            }}>
-              <strong>Demo Credentials:</strong><br />
-              Admin: admin@waveverse.com / admin123<br />
-              User: user@example.com / user123
-            </div>
+          <div className="login-form-content" style={{ padding: '2rem' }}>
+
 
             <form onSubmit={handleSubmit}>
               {errors.submit && (
@@ -241,7 +312,8 @@ const Login = () => {
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 };
 

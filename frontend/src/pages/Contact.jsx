@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ValidationRegex, validateField } from '../utils/validation';
+import API_BASE_URL from '../config/api';
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -84,18 +85,36 @@ const Contact = () => {
 
     setLoading(true);
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      setSuccess(true);
-      setFormData({
-        name: '',
-        email: '',
-        subject: '',
-        message: '',
-        type: 'general'
+      const response = await fetch(`${API_BASE_URL}/api/contact`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          phone: '', // Add phone field if needed
+          subject: formData.subject,
+          message: formData.message
+        })
       });
+      
+      const data = await response.json();
+      
+      if (response.ok) {
+        setSuccess(true);
+        setFormData({
+          name: '',
+          email: '',
+          subject: '',
+          message: '',
+          type: 'general'
+        });
+      } else {
+        setErrors({ submit: data.message || 'Failed to send message' });
+      }
     } catch (error) {
-      setErrors({ submit: 'Failed to send message. Please try again.' });
+      setErrors({ submit: 'Network error. Please try again.' });
     } finally {
       setLoading(false);
     }

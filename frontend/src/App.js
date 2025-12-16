@@ -15,14 +15,23 @@ import Recipes from './pages/Recipes';
 import About from './pages/About';
 import Contact from './pages/Contact';
 import Cart from './pages/Cart';
+import Checkout from './pages/Checkout';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import ForgotPassword from './pages/ForgotPassword';
+import HelpCenter from './pages/HelpCenter';
+import TrackOrder from './pages/TrackOrder';
+import Returns from './pages/Returns';
+import ShippingInfo from './pages/ShippingInfo';
+import FAQ from './pages/FAQ';
+import Terms from './pages/Terms';
+import Privacy from './pages/Privacy';
 
 // Admin Pages
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AddProduct from './pages/admin/AddProduct';
 import ManageProducts from './pages/admin/ManageProducts';
+import AdminOrders from './pages/admin/AdminOrders';
 
 import './App.css';
 
@@ -43,9 +52,17 @@ function App() {
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/cart" element={<Cart />} />
+            <Route path="/checkout" element={<Checkout />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/help-center" element={<HelpCenter />} />
+            <Route path="/track-order" element={<TrackOrder />} />
+            <Route path="/returns" element={<Returns />} />
+            <Route path="/shipping-info" element={<ShippingInfo />} />
+            <Route path="/faq" element={<FAQ />} />
+            <Route path="/terms" element={<Terms />} />
+            <Route path="/privacy" element={<Privacy />} />
 
             {/* Protected Admin Routes */}
             <Route path="/admin" element={
@@ -61,6 +78,11 @@ function App() {
             <Route path="/admin/manage-products" element={
               <ProtectedRoute adminOnly>
                 <ManageProducts />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/orders" element={
+              <ProtectedRoute adminOnly>
+                <AdminOrders />
               </ProtectedRoute>
             } />
             </Routes>

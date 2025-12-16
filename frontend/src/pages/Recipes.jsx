@@ -7,6 +7,7 @@ const Recipes = () => {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedDifficulty, setSelectedDifficulty] = useState('all');
   const [loading, setLoading] = useState(true);
+  const [selectedRecipe, setSelectedRecipe] = useState(null);
 
   const mockRecipes = [
     {
@@ -465,7 +466,10 @@ const Recipes = () => {
                     </div>
                   </div>
 
-                  <button className="btn btn-primary w-full">
+                  <button 
+                    className="btn btn-primary w-full"
+                    onClick={() => setSelectedRecipe(recipe)}
+                  >
                     View Full Recipe
                   </button>
                 </div>
@@ -474,6 +478,160 @@ const Recipes = () => {
           </div>
         )}
       </div>
+
+      {/* Recipe Modal */}
+      {selectedRecipe && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'rgba(0,0,0,0.8)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 1000,
+          padding: '1rem'
+        }}>
+          <div style={{
+            background: 'white',
+            borderRadius: 'var(--border-radius-lg)',
+            maxWidth: '800px',
+            maxHeight: '90vh',
+            overflow: 'auto',
+            position: 'relative'
+          }}>
+            {/* Close Button */}
+            <button
+              onClick={() => setSelectedRecipe(null)}
+              style={{
+                position: 'absolute',
+                top: '1rem',
+                right: '1rem',
+                background: 'var(--gray-800)',
+                color: 'white',
+                border: 'none',
+                borderRadius: '50%',
+                width: '40px',
+                height: '40px',
+                fontSize: '1.5rem',
+                cursor: 'pointer',
+                zIndex: 1001
+              }}
+            >
+              ×
+            </button>
+
+            {/* Recipe Header */}
+            <div style={{ position: 'relative' }}>
+              <img
+                src={selectedRecipe.image}
+                alt={selectedRecipe.title}
+                style={{
+                  width: '100%',
+                  height: '300px',
+                  objectFit: 'cover',
+                  borderRadius: 'var(--border-radius-lg) var(--border-radius-lg) 0 0'
+                }}
+              />
+              <div style={{
+                position: 'absolute',
+                bottom: '1rem',
+                left: '1rem',
+                background: 'rgba(0,0,0,0.8)',
+                color: 'white',
+                padding: '1rem',
+                borderRadius: 'var(--border-radius)'
+              }}>
+                <h1 style={{ margin: 0, marginBottom: '0.5rem' }}>{selectedRecipe.title}</h1>
+                <p style={{ margin: 0, opacity: 0.9 }}>{selectedRecipe.description}</p>
+              </div>
+            </div>
+
+            <div style={{ padding: '2rem' }}>
+              {/* Recipe Info */}
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
+                gap: '1rem',
+                marginBottom: '2rem',
+                padding: '1rem',
+                background: 'var(--gray-50)',
+                borderRadius: 'var(--border-radius)'
+              }}>
+                <div style={{ textAlign: 'center' }}>
+                  <div style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>⏱️</div>
+                  <div style={{ fontWeight: '600' }}>{selectedRecipe.prepTime} min</div>
+                  <div style={{ fontSize: '0.875rem', color: 'var(--gray-600)' }}>Prep Time</div>
+                </div>
+                <div style={{ textAlign: 'center' }}>
+                  <div style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>👥</div>
+                  <div style={{ fontWeight: '600' }}>{selectedRecipe.servings}</div>
+                  <div style={{ fontSize: '0.875rem', color: 'var(--gray-600)' }}>Servings</div>
+                </div>
+                <div style={{ textAlign: 'center' }}>
+                  <div style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>📊</div>
+                  <div style={{ 
+                    fontWeight: '600',
+                    color: getDifficultyColor(selectedRecipe.difficulty),
+                    textTransform: 'capitalize'
+                  }}>
+                    {selectedRecipe.difficulty}
+                  </div>
+                  <div style={{ fontSize: '0.875rem', color: 'var(--gray-600)' }}>Difficulty</div>
+                </div>
+              </div>
+
+              {/* Tags */}
+              <div style={{ marginBottom: '2rem' }}>
+                <h3 style={{ marginBottom: '1rem' }}>Tags</h3>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+                  {selectedRecipe.tags.map((tag, index) => (
+                    <span
+                      key={index}
+                      style={{
+                        background: 'var(--primary)20',
+                        color: 'var(--primary)',
+                        padding: '0.5rem 1rem',
+                        borderRadius: '20px',
+                        fontSize: '0.875rem',
+                        fontWeight: '500'
+                      }}
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              {/* Ingredients */}
+              <div style={{ marginBottom: '2rem' }}>
+                <h3 style={{ marginBottom: '1rem' }}>Ingredients</h3>
+                <ul style={{ paddingLeft: '1.5rem' }}>
+                  {selectedRecipe.ingredients.map((ingredient, index) => (
+                    <li key={index} style={{ marginBottom: '0.5rem', lineHeight: '1.5' }}>
+                      {ingredient}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Instructions */}
+              <div>
+                <h3 style={{ marginBottom: '1rem' }}>Instructions</h3>
+                <ol style={{ paddingLeft: '1.5rem' }}>
+                  {selectedRecipe.instructions.map((instruction, index) => (
+                    <li key={index} style={{ marginBottom: '1rem', lineHeight: '1.6' }}>
+                      {instruction}
+                    </li>
+                  ))}
+                </ol>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

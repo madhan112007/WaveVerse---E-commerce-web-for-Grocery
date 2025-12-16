@@ -152,15 +152,15 @@ const Footer = () => {
               margin: 0
             }}>
               {[
-                { label: 'Help Center', href: '#' },
-                { label: 'Track Your Order', href: '#' },
-                { label: 'Returns & Refunds', href: '#' },
-                { label: 'Shipping Info', href: '#' },
-                { label: 'FAQ', href: '#' }
+                { label: 'Help Center', to: '/help-center' },
+                { label: 'Track Your Order', to: '/track-order' },
+                { label: 'Returns & Refunds', to: '/returns' },
+                { label: 'Shipping Info', to: '/shipping-info' },
+                { label: 'FAQ', to: '/faq' }
               ].map((link, index) => (
                 <li key={index} style={{ marginBottom: '0.5rem' }}>
-                  <a
-                    href={link.href}
+                  <Link
+                    to={link.to}
                     style={{
                       color: 'var(--gray-300)',
                       textDecoration: 'none',
@@ -171,7 +171,7 @@ const Footer = () => {
                     onMouseOut={(e) => e.target.style.color = 'var(--gray-300)'}
                   >
                     {link.label}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>

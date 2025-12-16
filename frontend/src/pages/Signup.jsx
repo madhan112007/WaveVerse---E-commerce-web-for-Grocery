@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { ValidationRegex, validateField } from '../utils/validation';
+import API_BASE_URL from '../config/api';
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -103,16 +104,34 @@ const Signup = () => {
 
     setLoading(true);
     try {
-      await signup({
-        name: formData.name.trim(),
-        email: formData.email,
-        phone: formData.phone,
-        password: formData.password,
-        role: formData.role
+      const [firstName, ...lastNameParts] = formData.name.trim().split(' ');
+      const lastName = lastNameParts.join(' ') || '';
+      
+      const response = await fetch(`${API_BASE_URL}/api/user/signup`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          firstName,
+          lastName,
+          email: formData.email,
+          phone: formData.phone,
+          password: formData.password,
+          role: formData.role
+        })
       });
-      navigate('/');
+      
+      const data = await response.json();
+      
+      if (response.ok) {
+        alert('Account created successfully!');
+        navigate('/login');
+      } else {
+        setErrors({ submit: data.message || 'Registration failed' });
+      }
     } catch (error) {
-      setErrors({ submit: error.message });
+      setErrors({ submit: 'Network error. Please try again.' });
     } finally {
       setLoading(false);
     }
@@ -148,15 +167,43 @@ const Signup = () => {
   return (
     <div style={{ 
       minHeight: '100vh', 
-      display: 'flex', 
-      alignItems: 'center',
-      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-      padding: '2rem 1rem'
+      display: 'flex',
+      background: '#f8f9fa'
     }}>
-      <div className="container">
+      {/* Left Side - Image */}
+      <div style={{
+        flex: 1,
+        backgroundImage: 'linear-gradient(135deg, rgba(76, 175, 80, 0.8) 0%, rgba(56, 142, 60, 0.8) 100%), url("https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800&h=1000&fit=crop")',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: 'white',
+        padding: '2rem',
+        minHeight: '100vh'
+      }}>
+        <div style={{ textAlign: 'center', maxWidth: '400px' }}>
+          <h1 style={{ fontSize: '3rem', marginBottom: '1rem', fontWeight: '700' }}>Join WaveVerse</h1>
+          <p style={{ fontSize: '1.2rem', opacity: 0.9, lineHeight: '1.6' }}>
+            Start your journey with fresh, quality groceries delivered fast. Create your account today!
+          </p>
+        </div>
+      </div>
+
+      {/* Right Side - Form */}
+      <div style={{
+        flex: 1,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '2rem',
+        overflowY: 'auto'
+      }}>
         <div style={{
+          width: '100%',
           maxWidth: '500px',
-          margin: '0 auto',
           background: 'white',
           borderRadius: 'var(--border-radius-xl)',
           boxShadow: 'var(--shadow-xl)',
