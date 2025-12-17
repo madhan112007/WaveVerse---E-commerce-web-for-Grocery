@@ -34,6 +34,7 @@ import ManageProducts from './pages/admin/ManageProducts';
 import AdminOrders from './pages/admin/AdminOrders';
 import AddRecipe from './pages/admin/AddRecipe';
 import ManageRecipes from './pages/admin/ManageRecipes';
+import EditRecipe from './pages/admin/EditRecipe';
 
 import './App.css';
 
@@ -95,6 +96,11 @@ function App() {
             <Route path="/admin/manage-recipes" element={
               <ProtectedRoute adminOnly>
                 <ManageRecipes />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/edit-recipe/:id" element={
+              <ProtectedRoute adminOnly>
+                <EditRecipe />
               </ProtectedRoute>
             } />
             </Routes>

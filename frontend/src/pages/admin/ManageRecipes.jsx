@@ -154,6 +154,12 @@ const ManageRecipes = () => {
                 </div>
                 <div style={{ display: 'flex', gap: '0.5rem' }}>
                   <button
+                    onClick={() => navigate(`/admin/edit-recipe/${recipe._id}`)}
+                    className="btn btn-primary btn-sm"
+                  >
+                    Edit
+                  </button>
+                  <button
                     onClick={() => handleDelete(recipe._id)}
                     className="btn btn-outline btn-sm"
                     style={{ color: 'var(--error)', borderColor: 'var(--error)' }}
