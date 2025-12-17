@@ -31,6 +31,7 @@ import Privacy from './pages/Privacy';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AddProduct from './pages/admin/AddProduct';
 import ManageProducts from './pages/admin/ManageProducts';
+import EditProduct from './pages/admin/EditProduct';
 import AdminOrders from './pages/admin/AdminOrders';
 import AddRecipe from './pages/admin/AddRecipe';
 import ManageRecipes from './pages/admin/ManageRecipes';
@@ -81,6 +82,11 @@ function App() {
             <Route path="/admin/manage-products" element={
               <ProtectedRoute adminOnly>
                 <ManageProducts />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/edit-product/:id" element={
+              <ProtectedRoute adminOnly>
+                <EditProduct />
               </ProtectedRoute>
             } />
             <Route path="/admin/orders" element={

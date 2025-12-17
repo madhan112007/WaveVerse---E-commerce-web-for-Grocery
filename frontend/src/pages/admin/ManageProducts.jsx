@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import API_BASE_URL from '../../config/api';
 
 const ManageProducts = () => {
   const [products, setProducts] = useState([]);
@@ -7,8 +8,8 @@ const ManageProducts = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [loading, setLoading] = useState(true);
-  const [editingProduct, setEditingProduct] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(null);
+  const navigate = useNavigate();
 
   // Mock products data
   const mockProducts = [
@@ -71,13 +72,29 @@ const ManageProducts = () => {
   ];
 
   useEffect(() => {
-    // Simulate API call
-    setTimeout(() => {
+    fetchProducts();
+  }, []);
+
+  const fetchProducts = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/products`);
+      const data = await response.json();
+      if (data.length > 0) {
+        const productsWithId = data.map(p => ({ ...p, id: p._id || p.id }));
+        setProducts(productsWithId);
+        setFilteredProducts(productsWithId);
+      } else {
+        setProducts(mockProducts);
+        setFilteredProducts(mockProducts);
+      }
+    } catch (error) {
+      console.error('Error fetching products:', error);
       setProducts(mockProducts);
       setFilteredProducts(mockProducts);
+    } finally {
       setLoading(false);
-    }, 1000);
-  }, []);
+    }
+  };
 
   useEffect(() => {
     let filtered = products;
@@ -98,40 +115,64 @@ const ManageProducts = () => {
     setFilteredProducts(filtered);
   }, [products, selectedCategory, searchTerm]);
 
-  const handleToggleStock = (productId) => {
-    setProducts(prev => prev.map(product =>
-      product.id === productId
-        ? { ...product, inStock: !product.inStock }
-        : product
-    ));
+  const handleToggleStock = async (productId) => {
+    try {
+      const product = products.find(p => p.id === productId);
+      const response = await fetch(`${API_BASE_URL}/api/products/${productId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...product, inStock: !product.inStock })
+      });
+      
+      if (response.ok) {
+        setProducts(prev => prev.map(p =>
+          p.id === productId ? { ...p, inStock: !p.inStock } : p
+        ));
+      }
+    } catch (error) {
+      console.error('Error updating stock:', error);
+    }
   };
 
-  const handleToggleFeatured = (productId) => {
-    setProducts(prev => prev.map(product =>
-      product.id === productId
-        ? { ...product, featured: !product.featured }
-        : product
-    ));
+  const handleToggleFeatured = async (productId) => {
+    try {
+      const product = products.find(p => p.id === productId);
+      const response = await fetch(`${API_BASE_URL}/api/products/${productId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...product, featured: !product.featured })
+      });
+      
+      if (response.ok) {
+        setProducts(prev => prev.map(p =>
+          p.id === productId ? { ...p, featured: !p.featured } : p
+        ));
+      }
+    } catch (error) {
+      console.error('Error updating featured:', error);
+    }
   };
 
-  const handleDeleteProduct = (productId) => {
-    setProducts(prev => prev.filter(product => product.id !== productId));
-    setShowDeleteModal(null);
+  const handleDeleteProduct = async (productId) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/products/${productId}`, {
+        method: 'DELETE'
+      });
+      
+      if (response.ok) {
+        setProducts(prev => prev.filter(product => product.id !== productId));
+        alert('Product deleted successfully!');
+      }
+    } catch (error) {
+      console.error('Error deleting product:', error);
+      alert('Failed to delete product');
+    } finally {
+      setShowDeleteModal(null);
+    }
   };
 
   const handleEditProduct = (product) => {
-    setEditingProduct({ ...product });
-  };
-
-  const handleSaveEdit = () => {
-    setProducts(prev => prev.map(product =>
-      product.id === editingProduct.id ? editingProduct : product
-    ));
-    setEditingProduct(null);
-  };
-
-  const handleCancelEdit = () => {
-    setEditingProduct(null);
+    navigate(`/admin/edit-product/${product.id}`);
   };
 
   if (loading) {
@@ -397,58 +438,7 @@ const ManageProducts = () => {
         </div>
       </div>
 
-      {/* Edit Modal */}
-      {editingProduct && (
-        <div className="modal-overlay" onClick={handleCancelEdit}>
-          <div className="modal" onClick={(e) => e.stopPropagation()}>
-            <div className="card-header">
-              <h3 style={{ margin: 0 }}>Edit Product</h3>
-            </div>
-            <div className="card-body">
-              <div className="form-group">
-                <label className="form-label">Product Name</label>
-                <input
-                  type="text"
-                  value={editingProduct.name}
-                  onChange={(e) => setEditingProduct(prev => ({ ...prev, name: e.target.value }))}
-                  className="form-input"
-                />
-              </div>
-              
-              <div className="form-group">
-                <label className="form-label">Price (₹)</label>
-                <input
-                  type="number"
-                  value={editingProduct.price}
-                  onChange={(e) => setEditingProduct(prev => ({ ...prev, price: parseFloat(e.target.value) }))}
-                  className="form-input"
-                  step="0.01"
-                />
-              </div>
 
-              <div className="form-group">
-                <label className="form-label">Description</label>
-                <textarea
-                  value={editingProduct.description}
-                  onChange={(e) => setEditingProduct(prev => ({ ...prev, description: e.target.value }))}
-                  className="form-input"
-                  rows="3"
-                />
-              </div>
-            </div>
-            <div className="card-footer">
-              <div style={{ display: 'flex', gap: '1rem', justifyContent: 'flex-end' }}>
-                <button onClick={handleCancelEdit} className="btn btn-ghost">
-                  Cancel
-                </button>
-                <button onClick={handleSaveEdit} className="btn btn-primary">
-                  Save Changes
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Delete Confirmation Modal */}
       {showDeleteModal && (
