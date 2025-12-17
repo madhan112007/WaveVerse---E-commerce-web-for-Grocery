@@ -82,12 +82,24 @@ For support: +91 9363752456
     setLoading(true);
 
     try {
+      const orderId = 'ORD-' + Date.now().toString().slice(-6);
       const orderData = {
+        orderId,
         items: cart,
         customerInfo: formData,
         totals: cartTotals,
         orderDate: new Date().toISOString(),
-        status: 'pending'
+        status: 'pending',
+        trackingInfo: {
+          currentLocation: 'Order Placed',
+          estimatedDelivery: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString(),
+          updates: [{
+            status: 'pending',
+            message: 'Order placed successfully',
+            timestamp: new Date().toISOString(),
+            location: 'WaveVerse Store, Coimbatore'
+          }]
+        }
       };
 
       const response = await fetch(`${API_BASE_URL}/api/orders`, {
@@ -101,8 +113,8 @@ For support: +91 9363752456
       if (response.ok) {
         generateBill();
         clearCart();
-        alert('Order placed successfully! Your bill has been downloaded.');
-        navigate('/');
+        alert(`Order placed successfully! Your Order ID is: ${orderId}\nUse this ID to track your order.`);
+        navigate('/track-order');
       } else {
         alert('Failed to place order. Please try again.');
       }

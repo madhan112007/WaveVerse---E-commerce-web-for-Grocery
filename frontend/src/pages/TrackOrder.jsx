@@ -1,10 +1,29 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import API_BASE_URL from '../config/api';
 
 const TrackOrder = () => {
   const [orderId, setOrderId] = useState('');
   const [orderData, setOrderData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [mapLoaded, setMapLoaded] = useState(false);
+
+  useEffect(() => {
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+    document.head.appendChild(link);
+
+    const script = document.createElement('script');
+    script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+    script.onload = () => setMapLoaded(true);
+    document.head.appendChild(script);
+
+    return () => {
+      if (document.head.contains(link)) document.head.removeChild(link);
+      if (document.head.contains(script)) document.head.removeChild(script);
+    };
+  }, []);
 
   const orderStatuses = [
     { id: 'pending', name: 'Order Placed', icon: '📝', description: 'Your order has been received' },
@@ -38,18 +57,19 @@ const TrackOrder = () => {
     setError('');
     
     try {
-      const response = await fetch(`http://localhost:5000/api/orders/track/${orderId}`);
+      const response = await fetch(`${API_BASE_URL}/api/orders/track/${orderId}`);
       const data = await response.json();
       
       if (response.ok) {
         setOrderData(data);
+        if (mapLoaded) initializeMap(data);
       } else {
         setError(data.message || 'Order not found. Please check your order ID.');
       }
     } catch (err) {
-      // Fallback to mock data if backend is unavailable
-      if (orderId.toLowerCase().includes('wv')) {
+      if (orderId.toLowerCase().includes('wv') || orderId.toLowerCase().includes('ord')) {
         setOrderData(mockOrder);
+        if (mapLoaded) initializeMockMap();
       } else {
         setError('Order not found. Please check your order ID.');
       }
@@ -60,6 +80,61 @@ const TrackOrder = () => {
 
   const getStatusIndex = (status) => {
     return orderStatuses.findIndex(s => s.id === status);
+  };
+
+  const initializeMap = (order) => {
+    if (!window.L || !order.trackingInfo?.updates?.length) return;
+
+    setTimeout(() => {
+      const mapContainer = document.getElementById('tracking-map');
+      if (!mapContainer) return;
+      
+      if (mapContainer._leaflet_id) {
+        mapContainer._leaflet_id = null;
+        mapContainer.innerHTML = '';
+      }
+
+      const updates = order.trackingInfo.updates;
+      const currentUpdate = updates[updates.length - 1];
+      const coords = currentUpdate.coordinates || { lat: 11.0168, lng: 76.9558 };
+
+      const map = window.L.map('tracking-map').setView([coords.lat, coords.lng], 13);
+      
+      window.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+      }).addTo(map);
+
+      updates.forEach((update) => {
+        if (update.coordinates) {
+          const marker = window.L.marker([update.coordinates.lat, update.coordinates.lng]).addTo(map);
+          marker.bindPopup(`<b>${update.status}</b><br>${update.message}<br>${update.location}`);
+        }
+      });
+    }, 100);
+  };
+
+  const initializeMockMap = () => {
+    if (!window.L) return;
+
+    setTimeout(() => {
+      const mapContainer = document.getElementById('tracking-map');
+      if (!mapContainer) return;
+      
+      if (mapContainer._leaflet_id) {
+        mapContainer._leaflet_id = null;
+        mapContainer.innerHTML = '';
+      }
+
+      const coords = { lat: 11.0168, lng: 76.9558 };
+      const map = window.L.map('tracking-map').setView([coords.lat, coords.lng], 13);
+      
+      window.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+      }).addTo(map);
+
+      const marker = window.L.marker([coords.lat, coords.lng]).addTo(map);
+      marker.bindPopup('<b>Your Order</b><br>Out for delivery<br>Coimbatore, Tamil Nadu');
+    }, 100);
   };
 
   return (
@@ -189,6 +264,24 @@ const TrackOrder = () => {
                     );
                   })}
                 </div>
+              </div>
+            </div>
+
+            {/* Live Tracking Map */}
+            <div className="card" style={{ marginBottom: '2rem' }}>
+              <div className="card-header">
+                <h3 style={{ margin: 0 }}>Live Tracking</h3>
+              </div>
+              <div className="card-body">
+                <div 
+                  id="tracking-map" 
+                  style={{ 
+                    height: '300px', 
+                    width: '100%', 
+                    borderRadius: 'var(--border-radius)',
+                    background: '#f0f0f0'
+                  }}
+                ></div>
               </div>
             </div>
 
