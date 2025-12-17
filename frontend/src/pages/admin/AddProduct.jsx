@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ValidationRegex, validateField } from '../../utils/validation';
+import API_BASE_URL from '../../config/api';
 
 const AddProduct = () => {
   const [formData, setFormData] = useState({
@@ -120,13 +121,27 @@ const AddProduct = () => {
 
     setLoading(true);
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // In real app, this would be an API call
-      console.log('Product added:', formData);
-      
-      // Show success message and redirect
+      const productData = {
+        ...formData,
+        price: parseFloat(formData.price),
+        originalPrice: formData.originalPrice ? parseFloat(formData.originalPrice) : parseFloat(formData.price),
+        rating: 4.5,
+        reviews: 0,
+        discount: formData.originalPrice ? Math.round(((parseFloat(formData.originalPrice) - parseFloat(formData.price)) / parseFloat(formData.originalPrice)) * 100) : 0
+      };
+
+      const response = await fetch(`${API_BASE_URL}/api/products`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(productData)
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to add product');
+      }
+
       alert('Product added successfully!');
       navigate('/admin/manage-products');
     } catch (error) {
