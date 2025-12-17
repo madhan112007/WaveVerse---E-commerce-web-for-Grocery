@@ -286,31 +286,47 @@ const AdminDashboard = () => {
                   </div>
                 </Link>
 
-                <button 
-                  className="btn btn-ghost"
+                <Link 
+                  to="/admin/add-recipe" 
+                  className="btn btn-outline"
                   style={{ justifyContent: 'flex-start', gap: '1rem' }}
                 >
-                  <span style={{ fontSize: '1.5rem' }}>📊</span>
+                  <span style={{ fontSize: '1.5rem' }}>🍳</span>
                   <div>
-                    <div style={{ fontWeight: '600' }}>View Analytics</div>
+                    <div style={{ fontWeight: '600' }}>Add New Recipe</div>
                     <div style={{ fontSize: '0.875rem', opacity: 0.8 }}>
-                      Check sales and performance
+                      Add recipes to your collection
                     </div>
                   </div>
-                </button>
+                </Link>
 
-                <button 
-                  className="btn btn-ghost"
+                <Link 
+                  to="/admin/manage-recipes" 
+                  className="btn btn-outline"
                   style={{ justifyContent: 'flex-start', gap: '1rem' }}
                 >
-                  <span style={{ fontSize: '1.5rem' }}>👥</span>
+                  <span style={{ fontSize: '1.5rem' }}>📖</span>
                   <div>
-                    <div style={{ fontWeight: '600' }}>Manage Users</div>
+                    <div style={{ fontWeight: '600' }}>Manage Recipes</div>
                     <div style={{ fontSize: '0.875rem', opacity: 0.8 }}>
-                      View and manage customers
+                      Edit or delete recipes
                     </div>
                   </div>
-                </button>
+                </Link>
+
+                <Link 
+                  to="/admin/orders" 
+                  className="btn btn-outline"
+                  style={{ justifyContent: 'flex-start', gap: '1rem' }}
+                >
+                  <span style={{ fontSize: '1.5rem' }}>📦</span>
+                  <div>
+                    <div style={{ fontWeight: '600' }}>Manage Orders</div>
+                    <div style={{ fontSize: '0.875rem', opacity: 0.8 }}>
+                      View and manage customer orders
+                    </div>
+                  </div>
+                </Link>
               </div>
             </div>
           </div>

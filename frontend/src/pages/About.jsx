@@ -1,23 +1,26 @@
 import React from 'react';
+import meee1 from '../assets/meee1.jpeg';
+import surya from '../assets/surya.jpeg';
+import amma from '../assets/amma.jpeg';
 
 const About = () => {
   const team = [
     {
       name: 'Madhan S',
       role: 'Founder & CEO',
-      image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop',
+      image: meee1,
       bio: 'Passionate about sustainable farming and bringing fresh produce to communities.'
     },
     {
       name: 'Ajay Surya',
       role: 'Head of Operations',
-      image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&h=300&fit=crop',
+      image: surya,
       bio: 'Expert in supply chain management with 10+ years in the grocery industry.'
     },
     {
       name: 'Saraswathi',
       role: 'Quality Assurance Manager',
-      image: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=300&h=300&fit=crop',
+      image: amma,
       bio: 'Ensures every product meets our high standards for freshness and quality.'
     }
   ];

@@ -32,6 +32,8 @@ import AdminDashboard from './pages/admin/AdminDashboard';
 import AddProduct from './pages/admin/AddProduct';
 import ManageProducts from './pages/admin/ManageProducts';
 import AdminOrders from './pages/admin/AdminOrders';
+import AddRecipe from './pages/admin/AddRecipe';
+import ManageRecipes from './pages/admin/ManageRecipes';
 
 import './App.css';
 
@@ -83,6 +85,16 @@ function App() {
             <Route path="/admin/orders" element={
               <ProtectedRoute adminOnly>
                 <AdminOrders />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/add-recipe" element={
+              <ProtectedRoute adminOnly>
+                <AddRecipe />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/manage-recipes" element={
+              <ProtectedRoute adminOnly>
+                <ManageRecipes />
               </ProtectedRoute>
             } />
             </Routes>
