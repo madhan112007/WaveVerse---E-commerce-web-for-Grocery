@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import API_BASE_URL from '../config/api';
 
 const Recipes = () => {
   const [recipes, setRecipes] = useState([]);
@@ -207,12 +208,30 @@ const Recipes = () => {
   ];
 
   useEffect(() => {
-    setTimeout(() => {
+    fetchRecipes();
+  }, []);
+
+  const fetchRecipes = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/recipes`);
+      const data = await response.json();
+      if (data.length > 0) {
+        setRecipes(data);
+        setFilteredRecipes(data);
+      } else {
+        // Fallback to mock data if no recipes in DB
+        setRecipes(mockRecipes);
+        setFilteredRecipes(mockRecipes);
+      }
+    } catch (error) {
+      console.error('Error fetching recipes:', error);
+      // Fallback to mock data on error
       setRecipes(mockRecipes);
       setFilteredRecipes(mockRecipes);
+    } finally {
       setLoading(false);
-    }, 1000);
-  }, []);
+    }
+  };
 
   useEffect(() => {
     let filtered = recipes;

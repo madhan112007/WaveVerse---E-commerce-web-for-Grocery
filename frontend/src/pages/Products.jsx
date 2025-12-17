@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useCart } from '../context/CartContext';
 import QuantityModal from '../components/QuantityModal';
+import API_BASE_URL from '../config/api';
 
 const Products = () => {
   const [products, setProducts] = useState([]);
@@ -130,13 +131,30 @@ const Products = () => {
   ];
 
   useEffect(() => {
-    // Simulate API call
-    setTimeout(() => {
+    fetchProducts();
+  }, []);
+
+  const fetchProducts = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/products`);
+      const data = await response.json();
+      if (data.length > 0) {
+        setProducts(data);
+        setFilteredProducts(data);
+      } else {
+        // Fallback to mock data if no products in DB
+        setProducts(mockProducts);
+        setFilteredProducts(mockProducts);
+      }
+    } catch (error) {
+      console.error('Error fetching products:', error);
+      // Fallback to mock data on error
       setProducts(mockProducts);
       setFilteredProducts(mockProducts);
+    } finally {
       setLoading(false);
-    }, 1000);
-  }, []);
+    }
+  };
 
   useEffect(() => {
     let filtered = products;

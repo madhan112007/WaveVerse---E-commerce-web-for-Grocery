@@ -11,7 +11,6 @@ const Signup = () => {
     password: '',
     confirmPassword: '',
     phone: '',
-    role: 'user',
     agreeToTerms: false
   });
   const [errors, setErrors] = useState({});
@@ -118,7 +117,7 @@ const Signup = () => {
           email: formData.email,
           phone: formData.phone,
           password: formData.password,
-          role: formData.role
+          role: 'user'
         })
       });
       
@@ -280,24 +279,7 @@ const Signup = () => {
                 {errors.phone && <div className="form-error">{errors.phone}</div>}
               </div>
 
-              <div className="form-group">
-                <label className="form-label">Account Type *</label>
-                <select
-                  name="role"
-                  value={formData.role}
-                  onChange={handleChange}
-                  className="form-input"
-                >
-                  <option value="user">Regular User</option>
-                  <option value="admin">Admin</option>
-                </select>
-                <div style={{ fontSize: '0.875rem', color: 'var(--gray-600)', marginTop: '0.25rem' }}>
-                  {formData.role === 'user' 
-                    ? 'Shop for groceries and manage your orders'
-                    : 'Manage products, orders, and users'
-                  }
-                </div>
-              </div>
+
 
               <div className="form-group">
                 <label className="form-label">Password *</label>

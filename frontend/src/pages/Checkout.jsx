@@ -26,6 +26,57 @@ const Checkout = () => {
     });
   };
 
+  const generateBill = () => {
+    const billContent = `
+===========================================
+           WAVEVERSE GROCERY BILL
+===========================================
+Date: ${new Date().toLocaleDateString()}
+Time: ${new Date().toLocaleTimeString()}
+
+Customer Details:
+${formData.firstName} ${formData.lastName}
+${formData.email}
+${formData.phone}
+${formData.address}, ${formData.city}
+${formData.state} - ${formData.pincode}
+
+===========================================
+ITEMS ORDERED:
+===========================================
+${cart.map(item => 
+  `${item.name} x ${item.quantity} = ₹${(item.price * item.quantity).toFixed(0)}`
+).join('\n')}
+
+===========================================
+BILL SUMMARY:
+===========================================
+Subtotal: ₹${cartTotals.subtotal}
+Shipping: ${cartTotals.shipping === 0 ? 'FREE' : `₹${cartTotals.shipping}`}
+Tax: ₹${cartTotals.tax}
+-------------------------------------------
+TOTAL: ₹${cartTotals.total}
+
+Payment Method: ${formData.paymentMethod === 'cod' ? 'Cash on Delivery' : 'Online Payment'}
+
+===========================================
+Thank you for shopping with WaveVerse!
+For support: +91 9363752456
+===========================================
+    `;
+    
+    // Create and download bill
+    const blob = new Blob([billContent], { type: 'text/plain' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `WaveVerse_Bill_${Date.now()}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -35,7 +86,8 @@ const Checkout = () => {
         items: cart,
         customerInfo: formData,
         totals: cartTotals,
-        orderDate: new Date().toISOString()
+        orderDate: new Date().toISOString(),
+        status: 'pending'
       };
 
       const response = await fetch(`${API_BASE_URL}/api/orders`, {
@@ -47,8 +99,9 @@ const Checkout = () => {
       });
 
       if (response.ok) {
+        generateBill();
         clearCart();
-        alert('Order placed successfully!');
+        alert('Order placed successfully! Your bill has been downloaded.');
         navigate('/');
       } else {
         alert('Failed to place order. Please try again.');
