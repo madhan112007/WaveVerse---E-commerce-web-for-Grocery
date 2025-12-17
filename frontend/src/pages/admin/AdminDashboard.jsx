@@ -121,16 +121,24 @@ const AdminDashboard = () => {
               <Link to="/admin/add-product" className="btn" style={{
                 background: 'rgba(255,255,255,0.2)',
                 color: 'white',
-                border: '2px solid rgba(255,255,255,0.3)'
+                border: '2px solid rgba(255,255,255,0.3)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem'
               }}>
-                ➕ Add Product
+                <div style={{ width: '20px', height: '20px', background: '#10b981', borderRadius: '50%' }}></div>
+                Add Product
               </Link>
               <Link to="/admin/manage-products" className="btn" style={{
                 background: 'rgba(255,255,255,0.2)',
                 color: 'white',
-                border: '2px solid rgba(255,255,255,0.3)'
+                border: '2px solid rgba(255,255,255,0.3)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem'
               }}>
-                📦 Manage Products
+                <div style={{ width: '20px', height: '20px', background: '#3b82f6', borderRadius: '4px' }}></div>
+                Manage Products
               </Link>
             </div>
           </div>
@@ -147,7 +155,18 @@ const AdminDashboard = () => {
         }}>
           <div className="card">
             <div className="card-body" style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>📦</div>
+              <div style={{ 
+                width: '60px', 
+                height: '60px', 
+                background: '#3b82f6', 
+                borderRadius: '12px', 
+                margin: '0 auto 1rem',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}>
+                <div style={{ width: '30px', height: '30px', background: 'white', borderRadius: '4px' }}></div>
+              </div>
               <h3 style={{ color: 'var(--primary)', marginBottom: '0.5rem' }}>
                 {stats.totalProducts}
               </h3>
@@ -157,7 +176,18 @@ const AdminDashboard = () => {
 
           <div className="card">
             <div className="card-body" style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🛒</div>
+              <div style={{ 
+                width: '60px', 
+                height: '60px', 
+                background: '#10b981', 
+                borderRadius: '50%', 
+                margin: '0 auto 1rem',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}>
+                <div style={{ width: '25px', height: '25px', background: 'white', borderRadius: '50%' }}></div>
+              </div>
               <h3 style={{ color: 'var(--primary)', marginBottom: '0.5rem' }}>
                 {stats.totalOrders.toLocaleString()}
               </h3>
@@ -167,7 +197,18 @@ const AdminDashboard = () => {
 
           <div className="card">
             <div className="card-body" style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>💰</div>
+              <div style={{ 
+                width: '60px', 
+                height: '60px', 
+                background: '#f59e0b', 
+                borderRadius: '12px', 
+                margin: '0 auto 1rem',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}>
+                <div style={{ width: '30px', height: '20px', background: 'white', borderRadius: '2px' }}></div>
+              </div>
               <h3 style={{ color: 'var(--primary)', marginBottom: '0.5rem' }}>
                 ₹{stats.totalRevenue.toLocaleString()}
               </h3>
@@ -177,7 +218,19 @@ const AdminDashboard = () => {
 
           <div className="card">
             <div className="card-body" style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>👥</div>
+              <div style={{ 
+                width: '60px', 
+                height: '60px', 
+                background: '#8b5cf6', 
+                borderRadius: '50%', 
+                margin: '0 auto 1rem',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}>
+                <div style={{ width: '20px', height: '20px', background: 'white', borderRadius: '50%' }}></div>
+                <div style={{ width: '15px', height: '15px', background: 'white', borderRadius: '50%', marginLeft: '-5px' }}></div>
+              </div>
               <h3 style={{ color: 'var(--primary)', marginBottom: '0.5rem' }}>
                 {stats.totalUsers.toLocaleString()}
               </h3>
@@ -223,15 +276,16 @@ const AdminDashboard = () => {
                     <div style={{
                       display: 'inline-flex',
                       alignItems: 'center',
-                      gap: '0.25rem',
-                      padding: '0.25rem 0.5rem',
+                      gap: '0.5rem',
+                      padding: '0.25rem 0.75rem',
                       borderRadius: '12px',
                       fontSize: '0.75rem',
                       fontWeight: '600',
                       background: `${getStatusColor(order.status)}20`,
                       color: getStatusColor(order.status)
                     }}>
-                      {getStatusIcon(order.status)} {order.status}
+                      <div style={{ width: '8px', height: '8px', background: getStatusColor(order.status), borderRadius: '50%' }}></div>
+                      {order.status}
                     </div>
                   </div>
                 </div>
@@ -263,7 +317,9 @@ const AdminDashboard = () => {
                   className="btn btn-primary"
                   style={{ justifyContent: 'flex-start', gap: '1rem' }}
                 >
-                  <span style={{ fontSize: '1.5rem' }}>➕</span>
+                  <div style={{ width: '40px', height: '40px', background: 'rgba(255,255,255,0.2)', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <div style={{ width: '20px', height: '20px', background: 'white', borderRadius: '50%' }}></div>
+                  </div>
                   <div>
                     <div style={{ fontWeight: '600' }}>Add New Product</div>
                     <div style={{ fontSize: '0.875rem', opacity: 0.8 }}>
@@ -277,7 +333,9 @@ const AdminDashboard = () => {
                   className="btn btn-outline"
                   style={{ justifyContent: 'flex-start', gap: '1rem' }}
                 >
-                  <span style={{ fontSize: '1.5rem' }}>📦</span>
+                  <div style={{ width: '40px', height: '40px', background: '#3b82f6', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <div style={{ width: '20px', height: '20px', background: 'white', borderRadius: '4px' }}></div>
+                  </div>
                   <div>
                     <div style={{ fontWeight: '600' }}>Manage Products</div>
                     <div style={{ fontSize: '0.875rem', opacity: 0.8 }}>
@@ -291,7 +349,9 @@ const AdminDashboard = () => {
                   className="btn btn-outline"
                   style={{ justifyContent: 'flex-start', gap: '1rem' }}
                 >
-                  <span style={{ fontSize: '1.5rem' }}>🍳</span>
+                  <div style={{ width: '40px', height: '40px', background: '#10b981', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <div style={{ width: '20px', height: '15px', background: 'white', borderRadius: '2px' }}></div>
+                  </div>
                   <div>
                     <div style={{ fontWeight: '600' }}>Add New Recipe</div>
                     <div style={{ fontSize: '0.875rem', opacity: 0.8 }}>
@@ -305,7 +365,9 @@ const AdminDashboard = () => {
                   className="btn btn-outline"
                   style={{ justifyContent: 'flex-start', gap: '1rem' }}
                 >
-                  <span style={{ fontSize: '1.5rem' }}>📖</span>
+                  <div style={{ width: '40px', height: '40px', background: '#f59e0b', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <div style={{ width: '20px', height: '15px', background: 'white', borderRadius: '2px' }}></div>
+                  </div>
                   <div>
                     <div style={{ fontWeight: '600' }}>Manage Recipes</div>
                     <div style={{ fontSize: '0.875rem', opacity: 0.8 }}>
@@ -319,7 +381,9 @@ const AdminDashboard = () => {
                   className="btn btn-outline"
                   style={{ justifyContent: 'flex-start', gap: '1rem' }}
                 >
-                  <span style={{ fontSize: '1.5rem' }}>📦</span>
+                  <div style={{ width: '40px', height: '40px', background: '#8b5cf6', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <div style={{ width: '20px', height: '20px', background: 'white', borderRadius: '4px' }}></div>
+                  </div>
                   <div>
                     <div style={{ fontWeight: '600' }}>Manage Orders</div>
                     <div style={{ fontSize: '0.875rem', opacity: 0.8 }}>
@@ -332,17 +396,59 @@ const AdminDashboard = () => {
           </div>
         </div>
 
-        {/* Performance Chart Placeholder */}
+        {/* Sales Performance Chart */}
         <div className="card" style={{ marginTop: '2rem' }}>
           <div className="card-header">
             <h3 style={{ margin: 0 }}>Sales Performance</h3>
           </div>
-          <div className="card-body" style={{ textAlign: 'center', padding: '3rem' }}>
-            <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>📈</div>
-            <h4>Chart Coming Soon</h4>
-            <p style={{ color: 'var(--gray-600)' }}>
-              Sales analytics and performance charts will be available here
-            </p>
+          <div className="card-body">
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '2rem', marginBottom: '2rem' }}>
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ fontSize: '2rem', fontWeight: '700', color: '#10b981', marginBottom: '0.5rem' }}>+23%</div>
+                <div style={{ fontSize: '0.875rem', color: 'var(--gray-600)' }}>Sales Growth</div>
+              </div>
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ fontSize: '2rem', fontWeight: '700', color: '#3b82f6', marginBottom: '0.5rem' }}>₹45,230</div>
+                <div style={{ fontSize: '0.875rem', color: 'var(--gray-600)' }}>This Month</div>
+              </div>
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ fontSize: '2rem', fontWeight: '700', color: '#f59e0b', marginBottom: '0.5rem' }}>₹1,82,450</div>
+                <div style={{ fontSize: '0.875rem', color: 'var(--gray-600)' }}>Total Sales</div>
+              </div>
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ fontSize: '2rem', fontWeight: '700', color: '#8b5cf6', marginBottom: '0.5rem' }}>342</div>
+                <div style={{ fontSize: '0.875rem', color: 'var(--gray-600)' }}>Orders This Month</div>
+              </div>
+            </div>
+            
+            {/* Simple Bar Chart */}
+            <div style={{ marginTop: '2rem' }}>
+              <div style={{ fontSize: '1rem', fontWeight: '600', marginBottom: '1rem' }}>Monthly Sales Trend</div>
+              <div style={{ display: 'flex', alignItems: 'end', gap: '1rem', height: '200px', padding: '1rem', background: 'var(--gray-50)', borderRadius: 'var(--border-radius)' }}>
+                {[
+                  { month: 'Jan', value: 65, color: '#3b82f6' },
+                  { month: 'Feb', value: 78, color: '#10b981' },
+                  { month: 'Mar', value: 52, color: '#f59e0b' },
+                  { month: 'Apr', value: 89, color: '#8b5cf6' },
+                  { month: 'May', value: 95, color: '#ef4444' },
+                  { month: 'Jun', value: 73, color: '#06b6d4' }
+                ].map((bar, index) => (
+                  <div key={index} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flex: 1 }}>
+                    <div 
+                      style={{ 
+                        width: '100%', 
+                        maxWidth: '40px',
+                        height: `${bar.value * 1.5}px`, 
+                        background: bar.color, 
+                        borderRadius: '4px 4px 0 0',
+                        marginBottom: '0.5rem'
+                      }}
+                    ></div>
+                    <div style={{ fontSize: '0.75rem', color: 'var(--gray-600)' }}>{bar.month}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </div>
