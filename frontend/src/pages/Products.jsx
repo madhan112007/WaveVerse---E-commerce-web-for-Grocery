@@ -139,16 +139,15 @@ const Products = () => {
       const response = await fetch(`${API_BASE_URL}/api/products`);
       const data = await response.json();
       if (data.length > 0) {
-        setProducts(data);
-        setFilteredProducts(data);
+        const productsWithId = data.map(p => ({ ...p, id: p._id || p.id }));
+        setProducts(productsWithId);
+        setFilteredProducts(productsWithId);
       } else {
-        // Fallback to mock data if no products in DB
         setProducts(mockProducts);
         setFilteredProducts(mockProducts);
       }
     } catch (error) {
       console.error('Error fetching products:', error);
-      // Fallback to mock data on error
       setProducts(mockProducts);
       setFilteredProducts(mockProducts);
     } finally {

@@ -194,10 +194,11 @@ const Recipes = () => {
 
   const categories = [
     { id: 'all', name: 'All Recipes', icon: '🍽️' },
-    { id: 'breakfast', name: 'Breakfast', icon: '🌅' },
-    { id: 'salads', name: 'Salads', icon: '🥗' },
-    { id: 'main-dishes', name: 'Main Dishes', icon: '🍝' },
-    { id: 'desserts', name: 'Desserts', icon: '🍰' }
+    { id: 'Breakfast', name: 'Breakfast', icon: '🌅' },
+    { id: 'Salad', name: 'Salads', icon: '🥗' },
+    { id: 'Main Course', name: 'Main Course', icon: '🍝' },
+    { id: 'Dessert', name: 'Desserts', icon: '🍰' },
+    { id: 'Beverage', name: 'Beverages', icon: '🥤' }
   ];
 
   const difficulties = [
@@ -216,16 +217,15 @@ const Recipes = () => {
       const response = await fetch(`${API_BASE_URL}/api/recipes`);
       const data = await response.json();
       if (data.length > 0) {
-        setRecipes(data);
-        setFilteredRecipes(data);
+        const recipesWithId = data.map(r => ({ ...r, id: r._id || r.id }));
+        setRecipes(recipesWithId);
+        setFilteredRecipes(recipesWithId);
       } else {
-        // Fallback to mock data if no recipes in DB
         setRecipes(mockRecipes);
         setFilteredRecipes(mockRecipes);
       }
     } catch (error) {
       console.error('Error fetching recipes:', error);
-      // Fallback to mock data on error
       setRecipes(mockRecipes);
       setFilteredRecipes(mockRecipes);
     } finally {
@@ -241,14 +241,13 @@ const Recipes = () => {
     }
 
     if (selectedDifficulty !== 'all') {
-      filtered = filtered.filter(recipe => recipe.difficulty === selectedDifficulty);
+      filtered = filtered.filter(recipe => recipe.difficulty?.toLowerCase() === selectedDifficulty);
     }
 
     if (searchTerm) {
       filtered = filtered.filter(recipe =>
-        recipe.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        recipe.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        recipe.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
+        recipe.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        recipe.description?.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
@@ -435,18 +434,19 @@ const Recipes = () => {
                     fontSize: '0.875rem',
                     color: 'var(--gray-600)'
                   }}>
-                    <span>⏱️ {recipe.prepTime} min</span>
+                    <span>⏱️ {recipe.prepTime}</span>
                     <span>👥 {recipe.servings} servings</span>
                   </div>
 
                   {/* Tags */}
-                  <div style={{
-                    display: 'flex',
-                    flexWrap: 'wrap',
-                    gap: '0.5rem',
-                    marginBottom: '1rem'
-                  }}>
-                    {recipe.tags.slice(0, 3).map((tag, index) => (
+                  {recipe.tags && recipe.tags.length > 0 && (
+                    <div style={{
+                      display: 'flex',
+                      flexWrap: 'wrap',
+                      gap: '0.5rem',
+                      marginBottom: '1rem'
+                    }}>
+                      {recipe.tags.slice(0, 3).map((tag, index) => (
                       <span
                         key={index}
                         style={{
@@ -460,8 +460,9 @@ const Recipes = () => {
                       >
                         {tag}
                       </span>
-                    ))}
-                  </div>
+                      ))}
+                    </div>
+                  )}
 
                   {/* Ingredients Preview */}
                   <div style={{ marginBottom: '1rem' }}>
@@ -581,7 +582,7 @@ const Recipes = () => {
               }}>
                 <div style={{ textAlign: 'center' }}>
                   <div style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>⏱️</div>
-                  <div style={{ fontWeight: '600' }}>{selectedRecipe.prepTime} min</div>
+                  <div style={{ fontWeight: '600' }}>{selectedRecipe.prepTime}</div>
                   <div style={{ fontSize: '0.875rem', color: 'var(--gray-600)' }}>Prep Time</div>
                 </div>
                 <div style={{ textAlign: 'center' }}>
