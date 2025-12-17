@@ -134,9 +134,26 @@ const Products = () => {
     fetchProducts();
   }, []);
 
+  // Refresh products when page becomes visible (for admin updates)
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        fetchProducts();
+      }
+    };
+    
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+  }, []);
+
   const fetchProducts = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/products`);
+      const response = await fetch(`${API_BASE_URL}/api/products?t=${Date.now()}`, {
+        cache: 'no-cache',
+        headers: {
+          'Cache-Control': 'no-cache'
+        }
+      });
       const data = await response.json();
       if (data.length > 0) {
         const productsWithId = data.map(p => ({ ...p, id: p._id || p.id }));
